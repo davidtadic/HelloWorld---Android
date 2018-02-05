@@ -1,0 +1,28 @@
+Uri selectedImage;
+private static final int RESULT_LOAD_IMAGE = 1;
+ProgressDialog progressDialogLoadImage;
+
+public void onUploadButtonListener(View v) {
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(galleryIntent, RESULT_LOAD_IMAGE);
+    }
+
+    if (requestCode == RESULT_LOAD_IMAGE && resultCode == RESULT_OK && data != null) {
+                selectedImage = data.getData();
+                userPhoto.setImageURI(selectedImage);
+
+                LoadImage loadImage = new LoadImage();
+                loadImage.execute();
+
+    //            Bitmap bitmap = ((BitmapDrawable)userPhoto.getDrawable()).getBitmap();
+            }
+
+            try {
+                            InputStream imageStream = getContentResolver().openInputStream(selectedImage);
+                            Bitmap bitmap = BitmapFactory.decodeStream(imageStream);
+                            byte[] imageBytes = ImageHelper.getBytesFromBitmap(bitmap);
+                            userModel.setImageThumbnail(Base64.encodeToString(imageBytes, Base64.DEFAULT));
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                            Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+                        }

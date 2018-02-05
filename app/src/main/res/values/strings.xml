@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">HelloWorld</string>
+    <string name="login_username_hint">Username</string>
+    <string name="login_password_hint">Password</string>
+    <string name="login_button">Login</string>
+    <string name="login_no_account_hint">Don\'t have an account yet? Create one</string>
+    <string name="register_upload_photo">Upload your photo</string>
+    <string name="register_use_default">Use default</string>
+    <string name="register_first_name">First name</string>
+    <string name="register_last_name">Last name</string>
+    <string name="register_email">Email</string>
+    <string name="register_username">Username</string>
+    <string name="register_password">Password</string>
+    <string name="register_create_account">Create account</string>
+    <string name="register_member">Already a member? Login</string>
+    <string name="logout">Logout</string>
+    <string name="play">Play</string>
+    <string name="training">Practise</string>
+    <string name="exit">Exit</string>
+    <string name="statistics">Statistics</string>
+    <string name="chose_you_logo">chose you logo</string>
+</resources>
