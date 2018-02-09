@@ -37,7 +37,6 @@ public class RegisterActivity extends Activity {
     EditText passwordText;
     Button signupButton;
     TextView loginLink;
-    ProgressDialog progressDialog;
     private Context context = this;
 
     // dialog
@@ -69,11 +68,6 @@ public class RegisterActivity extends Activity {
         userModel = new UserModel();
         userPhoto.setImageResource(R.drawable.user_default_image);
         userModel.setImage(UserImage.DefaultImage);
-
-        progressDialog = new ProgressDialog(RegisterActivity.this);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setCancelable(false);
-        progressDialog.setMessage("Building your account. Please wait...");
 
         loginLink.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -180,6 +174,11 @@ public class RegisterActivity extends Activity {
                 return;
             } else {
                 signupButton.setEnabled(false);
+
+                final ProgressDialog progressDialog = new ProgressDialog(RegisterActivity.this);
+                progressDialog.setIndeterminate(true);
+                progressDialog.setCancelable(false);
+                progressDialog.setMessage("Building your account. Please wait...");
                 progressDialog.show();
 
                 userModel.setFirstName(firstNameText.getText().toString());
@@ -195,7 +194,7 @@ public class RegisterActivity extends Activity {
                     @Override
                     public void onResponse(Call<UserModel> call, Response<UserModel> response) {
                         signupButton.setEnabled(true);
-                        progressDialog.hide();
+                        progressDialog.dismiss();
 
                         if (response.isSuccessful()) {
                             Toast.makeText(RegisterActivity.this, "Account was created successfully\n Please login to continue", Toast.LENGTH_LONG).show();
@@ -210,7 +209,7 @@ public class RegisterActivity extends Activity {
                     @Override
                     public void onFailure(Call<UserModel> call, Throwable t) {
                         signupButton.setEnabled(true);
-                        progressDialog.hide();
+                        progressDialog.dismiss();
                         Toast.makeText(RegisterActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 });
@@ -219,8 +218,6 @@ public class RegisterActivity extends Activity {
     }
 
     public boolean validateForm() {
-        boolean valid;
-
         String firstName = firstNameText.getText().toString();
         String lastName = lastNameText.getText().toString();
         String email = emailText.getText().toString();
@@ -229,50 +226,52 @@ public class RegisterActivity extends Activity {
 
         if (firstName.isEmpty() || firstName.length() < 3) {
             firstNameText.setError("First name must be at least 3 characters");
-            valid = false;
+            return false;
         } else {
             firstNameText.setError(null);
-            valid = true;
         }
 
         if (lastName.isEmpty() || lastName.length() < 3) {
             lastNameText.setError("Last name must be at least 3 characters");
-            valid = false;
+            return false;
         } else {
             lastNameText.setError(null);
-            valid = true;
         }
 
         if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
             emailText.setError("Enter a valid email address");
-            valid = false;
+            return false;
         } else {
             emailText.setError(null);
-            valid = true;
         }
 
         if (username.isEmpty()) {
             usernameText.setError("Enter a valid username");
-            valid = false;
+            return false;
         } else {
             usernameText.setError(null);
-            valid = true;
         }
 
         if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
             passwordText.setError("Password must be between 4 and 10 alphanumeric characters");
-            valid = false;
+            return false;
         } else {
             passwordText.setError(null);
-            valid = true;
         }
 
-        return valid;
+        return true;
     }
 
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null;
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent i = new Intent(RegisterActivity.this, LoginActivity.class);
+        startActivity(i);
+        finish();
     }
 }
