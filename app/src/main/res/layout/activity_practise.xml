@@ -13,36 +13,18 @@
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
         android:paddingTop="16dp"
-        tools:context=".activities.MainActivity">
+        tools:context=".activities.PractiseActivity">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_marginBottom="40dp"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/userName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="7dp"
-                android:textColor="#0e6a60"
-                android:textSize="22sp" />
-
-            <ImageView
-                android:id="@+id/userPhotoMainMenu"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:layout_alignParentEnd="true" />
-        </RelativeLayout>
 
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingBottom="30dp"
+            android:paddingBottom="40dp"
             android:paddingEnd="20dp"
             android:paddingStart="20dp"
             android:paddingTop="10dp"
-            android:src="@drawable/title" />
+            android:src="@drawable/practise_title" />
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -50,23 +32,23 @@
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="horizontal"
-            android:paddingBottom="30dp"
+            android:paddingBottom="20dp"
             android:paddingLeft="50dp"
             android:paddingRight="50dp">
 
             <ImageView
-                android:id="@+id/main_menu_play"
-                android:layout_width="82dp"
+                android:id="@+id/web_programming_practise"
+                android:layout_width="72dp"
                 android:layout_height="82dp"
                 android:layout_marginEnd="40dp"
-                android:src="@drawable/play1" />
+                android:src="@drawable/web1" />
 
             <ImageView
-                android:id="@+id/main_menu_practise"
+                android:id="@+id/database_practise"
                 android:layout_width="82dp"
                 android:layout_height="82dp"
                 android:layout_marginStart="40dp"
-                android:src="@drawable/practise" />
+                android:src="@drawable/database" />
         </LinearLayout>
 
         <LinearLayout
@@ -81,41 +63,53 @@
             android:paddingTop="10dp">
 
             <ImageView
-                android:id="@+id/main_menu_statistic"
+                android:id="@+id/algorithms_practise"
                 android:layout_width="72dp"
                 android:layout_height="82dp"
                 android:layout_marginEnd="40dp"
-                android:src="@drawable/statistic" />
+                android:src="@drawable/algorithms" />
 
             <ImageView
-                android:id="@+id/main_menu_about"
+                android:id="@+id/oop_practise"
                 android:layout_width="82dp"
                 android:layout_height="82dp"
                 android:layout_marginStart="40dp"
-                android:src="@drawable/settings_icon" />
+                android:src="@drawable/oop" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingBottom="20dp"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
+            android:paddingTop="10dp">
+
+            <ImageView
+                android:id="@+id/data_structures_practise"
+                android:layout_width="72dp"
+                android:layout_height="82dp"
+                android:layout_marginEnd="40dp"
+                android:src="@drawable/data_structures" />
+
+            <ImageView
+                android:id="@+id/history_practise"
+                android:layout_width="82dp"
+                android:layout_height="82dp"
+                android:layout_marginStart="40dp"
+                android:src="@drawable/history" />
         </LinearLayout>
     </LinearLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:padding="10dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
-
-        <ImageView
-            android:id="@+id/shutdown"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_alignParentStart="true"
-            android:src="@drawable/shutdown" />
-
-        <ImageView
-            android:id="@+id/logout"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_alignParentEnd="true"
-            android:layout_marginEnd="10dp"
-            android:src="@drawable/logout" />
-
-    </RelativeLayout>
+    <ImageView
+        android:layout_width="42dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/back_practise"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="10dp"
+        android:layout_height="42dp"
+        android:src="@drawable/back"/>
 </RelativeLayout>

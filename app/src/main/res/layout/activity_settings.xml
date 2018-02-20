@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/background123"
+    android:fitsSystemWindows="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="16dp"
+        tools:context=".activities.SettingsActivity">
+
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="30dp"
+            android:paddingEnd="20dp"
+            android:paddingStart="20dp"
+            android:paddingTop="10dp"
+            android:src="@drawable/title" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_marginTop="100dp"
+            android:paddingBottom="20dp"
+            android:paddingLeft="50dp"
+            android:paddingRight="50dp"
+            android:paddingTop="10dp">
+
+            <ToggleButton
+                android:id="@+id/music_settings"
+                android:layout_width="72dp"
+                android:layout_height="82dp"
+                android:textOn=""
+                android:textOff=""
+                android:focusableInTouchMode="false"
+                android:focusable="false"
+                android:layout_marginEnd="40dp"
+                android:background="@drawable/music" />
+
+            <ImageView
+                android:id="@+id/about_settings"
+                android:layout_width="82dp"
+                android:layout_height="82dp"
+                android:layout_marginStart="40dp"
+                android:src="@drawable/rate_us" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="42dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:id="@+id/back_settings"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="10dp"
+        android:layout_height="42dp"
+        android:src="@drawable/back"/>
+</RelativeLayout>

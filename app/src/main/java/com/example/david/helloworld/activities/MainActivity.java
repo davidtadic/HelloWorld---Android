@@ -30,7 +30,7 @@ public class MainActivity extends Activity {
     ImageView playButton;
     ImageView practiseButton;
     ImageView statisticButton;
-    ImageView aboutButton;
+    ImageView settingsButton;
     ImageView shutdownButton;
     ImageView logoutButton;
     private SharedPreferences sharedPreferences = null;
@@ -48,7 +48,7 @@ public class MainActivity extends Activity {
         playButton = (ImageView) findViewById(R.id.main_menu_play);
         practiseButton = (ImageView) findViewById(R.id.main_menu_practise);
         statisticButton = (ImageView) findViewById(R.id.main_menu_statistic);
-        aboutButton = (ImageView) findViewById(R.id.main_menu_about);
+        settingsButton = (ImageView) findViewById(R.id.main_menu_about);
         shutdownButton = (ImageView) findViewById(R.id.shutdown);
         logoutButton = (ImageView) findViewById(R.id.logout);
 
@@ -92,6 +92,24 @@ public class MainActivity extends Activity {
                 }
             });
 
+            settingsButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            });
+
+            practiseButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(MainActivity.this, PractiseActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            });
+
             shutdownButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -102,13 +120,38 @@ public class MainActivity extends Activity {
             logoutButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    NetworkHelper.navigateToLogin(context, sharedPreferences);
+                    showLogoutDialog();
                 }
             });
 
         } else {
             NetworkHelper.navigateToLogin(context, null);
         }
+    }
+
+    private void showLogoutDialog() {
+        final Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.dialog_logout);
+
+        ImageButton yes = (ImageButton) dialog.findViewById(R.id.yes_exit);
+        ImageButton no = (ImageButton) dialog.findViewById(R.id.cancel_exit);
+
+        yes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                NetworkHelper.navigateToLogin(context, sharedPreferences);
+            }
+        });
+
+        no.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 
     private void showExitDialog() {

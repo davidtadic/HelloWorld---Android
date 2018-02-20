@@ -21,4 +21,14 @@
     <string name="chose_you_logo">chose you logo</string>
     <string name="are_you_sure_you_want_to_exit">Are you sure you want to exit?</string>
     <string name="confirm_password">Confirm password</string>
+    <string name="title_about">Title</string>
+    <string name="let_us_know_what_you_think">Let us know what you think</string>
+    <string name="send">Send</string>
+    <string name="helloworld_2017">HelloWorld © 2018</string>
+    <string name="logout_message">Are you sure you want to logout?</string>
+    <string name="chose_level">Chose level</string>
+    <string name="rookie">Rookie</string>
+    <string name="professional">Professional</string>
+    <string name="ghost">Ghost</string>
+    <string name="score_0">Score: 0</string>
 </resources>
