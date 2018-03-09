@@ -62,11 +62,11 @@
                 android:src="@drawable/play1" />
 
             <ImageView
-                android:id="@+id/main_menu_practise"
-                android:layout_width="82dp"
+                android:id="@+id/main_menu_statistic"
+                android:layout_width="72dp"
                 android:layout_height="82dp"
                 android:layout_marginStart="40dp"
-                android:src="@drawable/practise" />
+                android:src="@drawable/statistic" />
         </LinearLayout>
 
         <LinearLayout
@@ -81,17 +81,9 @@
             android:paddingTop="10dp">
 
             <ImageView
-                android:id="@+id/main_menu_statistic"
-                android:layout_width="72dp"
-                android:layout_height="82dp"
-                android:layout_marginEnd="40dp"
-                android:src="@drawable/statistic" />
-
-            <ImageView
                 android:id="@+id/main_menu_about"
                 android:layout_width="82dp"
                 android:layout_height="82dp"
-                android:layout_marginStart="40dp"
                 android:src="@drawable/settings_icon" />
         </LinearLayout>
     </LinearLayout>

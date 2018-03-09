@@ -45,6 +45,15 @@
         <activity
             android:name=".activities.PractiseQuestionActivity"
             android:screenOrientation="portrait" />
+
+        <service
+            android:name=".services.BackgroundMusicService"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity
+            android:name=".activities.StatisticActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

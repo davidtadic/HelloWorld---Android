@@ -2,9 +2,12 @@ package com.example.david.helloworld.activities;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -17,6 +20,7 @@ import com.example.david.helloworld.helpers.NetworkHelper;
 import com.example.david.helloworld.models.game.Category;
 import com.example.david.helloworld.models.game.PractiseRequestModel;
 import com.example.david.helloworld.models.game.QuestionLevel;
+import com.example.david.helloworld.services.BackgroundMusicService;
 
 public class PractiseActivity extends Activity {
 

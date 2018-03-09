@@ -2,9 +2,12 @@ package com.example.david.helloworld.activities;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.os.IBinder;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,6 +23,7 @@ import com.example.david.helloworld.R;
 import com.example.david.helloworld.helpers.NetworkHelper;
 import com.example.david.helloworld.helpers.TokenHelper;
 import com.example.david.helloworld.models.user.TokenModel;
+import com.example.david.helloworld.services.BackgroundMusicService;
 
 import io.jsonwebtoken.Jwts;
 
@@ -28,7 +32,7 @@ public class MainActivity extends Activity {
     TextView username;
     ImageView profileImage;
     ImageView playButton;
-    ImageView practiseButton;
+//    ImageView practiseButton;
     ImageView statisticButton;
     ImageView settingsButton;
     ImageView shutdownButton;
@@ -38,6 +42,24 @@ public class MainActivity extends Activity {
     private TokenModel token = null;
     private Context context = this;
 
+    BackgroundMusicService musicService;
+    boolean mBound = false;
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            BackgroundMusicService.ServiceBinder binder = (BackgroundMusicService.ServiceBinder) service;
+            musicService = binder.getService();
+            mBound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName arg0) {
+            mBound = false;
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +68,7 @@ public class MainActivity extends Activity {
         username = (TextView) findViewById(R.id.userName);
         profileImage = (ImageView) findViewById(R.id.userPhotoMainMenu);
         playButton = (ImageView) findViewById(R.id.main_menu_play);
-        practiseButton = (ImageView) findViewById(R.id.main_menu_practise);
+//        practiseButton = (ImageView) findViewById(R.id.main_menu_practise);
         statisticButton = (ImageView) findViewById(R.id.main_menu_statistic);
         settingsButton = (ImageView) findViewById(R.id.main_menu_about);
         shutdownButton = (ImageView) findViewById(R.id.shutdown);
@@ -92,6 +114,15 @@ public class MainActivity extends Activity {
                 }
             });
 
+            statisticButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(MainActivity.this, StatisticActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            });
+
             settingsButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -101,7 +132,7 @@ public class MainActivity extends Activity {
                 }
             });
 
-            practiseButton.setOnClickListener(new View.OnClickListener() {
+            playButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(MainActivity.this, PractiseActivity.class);
@@ -124,6 +155,11 @@ public class MainActivity extends Activity {
                 }
             });
 
+            if (musicService.State) {
+                Intent i = new Intent(this, BackgroundMusicService.class);
+                startService(i);
+            }
+
         } else {
             NetworkHelper.navigateToLogin(context, null);
         }
@@ -141,6 +177,8 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 dialog.dismiss();
                 NetworkHelper.navigateToLogin(context, sharedPreferences);
+                Intent service = new Intent(MainActivity.this, BackgroundMusicService.class);
+                stopService(service);
             }
         });
 
@@ -174,6 +212,9 @@ public class MainActivity extends Activity {
                 editor.remove("HelloWorldToken");
                 editor.apply();
 
+                Intent service = new Intent(MainActivity.this, BackgroundMusicService.class);
+                stopService(service);
+
                 startActivity(startMain);
                 finish();
             }
@@ -187,6 +228,22 @@ public class MainActivity extends Activity {
         });
 
         dialog.show();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Intent intent = new Intent(this, BackgroundMusicService.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mBound) {
+            unbindService(mConnection);
+            mBound = false;
+        }
     }
 
     @Override

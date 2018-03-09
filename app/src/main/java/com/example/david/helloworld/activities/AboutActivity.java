@@ -2,10 +2,13 @@ package com.example.david.helloworld.activities;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,6 +20,7 @@ import com.example.david.helloworld.helpers.NetworkHelper;
 import com.example.david.helloworld.models.user.MailModel;
 import com.example.david.helloworld.retrofit.APIEndpoints;
 import com.example.david.helloworld.retrofit.ServiceGenerator;
+import com.example.david.helloworld.services.BackgroundMusicService;
 
 import retrofit2.Call;
 import retrofit2.Callback;

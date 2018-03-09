@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
 
 /**
@@ -36,4 +37,7 @@ public interface APIEndpoints {
 
     @POST("Game/InsertTrainingInfo/")
     Call<Void> insertTrainingInfo(@Body PractiseModel practiseModel);
+
+    @POST("Game/GetPractiseRecords/")
+    Call<ArrayList<PractiseModel>> getPractiseRecords();
 }

@@ -9,12 +9,21 @@ import java.util.Date;
 public class PractiseModel {
     private int id;
     private Category category;
+    private QuestionLevel level;
     private int userId;
     private int points;
-    private Date datePlayed;
+    private String datePlayed;
 
     public int getId() {
         return id;
+    }
+
+    public QuestionLevel getLevel() {
+        return level;
+    }
+
+    public void setLevel(QuestionLevel level) {
+        this.level = level;
     }
 
     public void setId(int id) {
@@ -45,11 +54,11 @@ public class PractiseModel {
         this.points = points;
     }
 
-    public Date getDatePlayed() {
+    public String getDatePlayed() {
         return datePlayed;
     }
 
-    public void setDatePlayed(Date datePlayed) {
+    public void setDatePlayed(String datePlayed) {
         this.datePlayed = datePlayed;
     }
 }

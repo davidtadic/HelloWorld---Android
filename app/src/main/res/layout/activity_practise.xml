@@ -23,7 +23,7 @@
             android:paddingEnd="20dp"
             android:paddingStart="20dp"
             android:paddingTop="10dp"
-            android:src="@drawable/practise_title" />
+            android:src="@drawable/play_title" />
 
 
         <LinearLayout

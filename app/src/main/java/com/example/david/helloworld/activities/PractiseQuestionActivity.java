@@ -1,6 +1,8 @@
 package com.example.david.helloworld.activities;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -20,13 +22,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.david.helloworld.R;
+import com.example.david.helloworld.helpers.TokenHelper;
 import com.example.david.helloworld.models.game.Category;
 import com.example.david.helloworld.models.game.PractiseModel;
 import com.example.david.helloworld.models.game.PractiseRequestModel;
 import com.example.david.helloworld.models.game.QuestionLevel;
 import com.example.david.helloworld.models.game.QuestionModel;
+import com.example.david.helloworld.models.user.TokenModel;
 import com.example.david.helloworld.retrofit.APIEndpoints;
 import com.example.david.helloworld.retrofit.ServiceGenerator;
+import com.example.david.helloworld.services.BackgroundMusicService;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,17 +54,25 @@ public class PractiseQuestionActivity extends Activity {
     Button answer2;
     Button answer3;
     Button answer4;
-    SharedPreferences sharedPreferences = null;
     TextView textLoadingScreen;
     TextView scoreInfoLastScreen;
     ImageButton confirmButton;
-    String authToken;
     CountDownTimer timer;
-    ArrayList<QuestionModel> questions = new ArrayList<QuestionModel>();
+    ProgressBar progressBarPractise;
+    ImageView userPhoto;
+
+    boolean isTimerFinished = false;
+    boolean isTimerPaused = false;
+    long timeRemaining = 0;
+
     int counterQuestion = 0;
     int points = 0;
-    ProgressBar progressBarPractise;
+    String authToken;
+
+    Context context = this;
+    SharedPreferences sharedPreferences = null;
     PractiseRequestModel requestModel = null;
+    ArrayList<QuestionModel> questions = new ArrayList<QuestionModel>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,8 +94,15 @@ public class PractiseQuestionActivity extends Activity {
                 if (response.isSuccessful()) {
                     initializeElements();
                     questions = response.body();
+                    if (questions.size() == 0) {
+                        Intent intent = new Intent(PractiseQuestionActivity.this, PractiseActivity.class);
+                        startActivity(intent);
+                        finish();
+                        Toast.makeText(PractiseQuestionActivity.this, "Sorry, but there are no questions currently in this category", Toast.LENGTH_LONG).show();
+                        return;
+                    }
                     setQuestion();
-                    startTimer();
+                    startTimer(8000, 1000);
                 } else {
                     ServiceGenerator.handleError(response, PractiseQuestionActivity.this);
                 }
@@ -98,16 +118,23 @@ public class PractiseQuestionActivity extends Activity {
         });
     }
 
-    private void startTimer() {
-        timer = new CountDownTimer(6000, 1000) {
+    private void startTimer(long millisInFuture, long countDownInterval) {
+        timer = new CountDownTimer(millisInFuture, countDownInterval) {
             @Override
             public void onTick(long millisUntilFinished) {
-                countdownTimer.setText(String.valueOf(millisUntilFinished / 1000));
+                if (isTimerPaused) {
+                    cancel();
+                } else {
+                    isTimerFinished = false;
+                    timeRemaining = millisUntilFinished;
+                    countdownTimer.setText(String.valueOf(millisUntilFinished / 1000));
+                }
             }
 
             @Override
             public void onFinish() {
                 if (counterQuestion == questions.size() - 1) {
+                    isTimerFinished = true;
                     showLastScreen();
                 } else {
                     runOnUiThread(new Runnable() {
@@ -139,6 +166,7 @@ public class PractiseQuestionActivity extends Activity {
         } else {
             byte[] decodedString = Base64.decode(questionModel.getImageThumbnail(), Base64.DEFAULT);
             Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            questionImage.setVisibility(View.VISIBLE);
             questionImage.setImageBitmap(decodedByte);
         }
 
@@ -291,45 +319,120 @@ public class PractiseQuestionActivity extends Activity {
         scoreInfoLastScreen = (TextView)findViewById(R.id.score_practise);
         confirmButton = (ImageButton) findViewById(R.id.confirm_practise);
         progressBarPractise = (ProgressBar) findViewById(R.id.progress_practise);
+        userPhoto = (ImageView) findViewById(R.id.practise_user_photo);
         progressBarPractise.setVisibility(View.GONE);
 
         scoreInfoLastScreen.setText(String.valueOf(points));
 
+        if (TokenHelper.DecodeToken(authToken) != null) {
+            TokenModel token = TokenHelper.DecodeToken(authToken);
+
+            switch (token.getImage()) {
+                case Anonymous:
+                    userPhoto.setImageResource(R.drawable.anonymous_user_logo);
+                    break;
+                case DefaultImage:
+                    userPhoto.setImageResource(R.drawable.user_default_image);
+                    break;
+                case Detective:
+                    userPhoto.setImageResource(R.drawable.detective_user_logo);
+                    break;
+                case Ghost:
+                    userPhoto.setImageResource(R.drawable.ghost_user_logo);
+                    break;
+                case Hacker:
+                    userPhoto.setImageResource(R.drawable.hacker_user_logo);
+                    break;
+                case Ninja:
+                    userPhoto.setImageResource(R.drawable.ninja_user_logo);
+                    break;
+                default:
+                    userPhoto.setImageResource(R.drawable.user_default_image);
+                    break;
+            }
+        }
+
         confirmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                confirmButton.setVisibility(View.GONE);
-                progressBarPractise.setVisibility(View.VISIBLE);
-                PractiseModel practiseModel = new PractiseModel();
-                practiseModel.setCategory(requestModel.getCategory());
-                practiseModel.setPoints(points);
-
-                APIEndpoints service = ServiceGenerator.createServiceAuthorization(APIEndpoints.class, authToken);
-                Call<Void> insertPractise = service.insertTrainingInfo(practiseModel);
-
-                insertPractise.enqueue(new Callback<Void>() {
-                    @Override
-                    public void onResponse(Call<Void> call, Response<Void> response) {
-                        if (response.isSuccessful()) {
-                            Intent intent = new Intent(PractiseQuestionActivity.this, PractiseActivity.class);
-                            startActivity(intent);
-                            finish();
-                            Toast.makeText(PractiseQuestionActivity.this, "Your score is successfully stored in database.", Toast.LENGTH_LONG).show();
-                        } else {
-                            confirmButton.setVisibility(View.VISIBLE);
-                            ServiceGenerator.handleError(response, PractiseQuestionActivity.this);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<Void> call, Throwable t) {
-                        Intent intent = new Intent(PractiseQuestionActivity.this, PractiseActivity.class);
-                        startActivity(intent);
-                        finish();
-                        Toast.makeText(PractiseQuestionActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                });
+                sendResultFromTraining();
             }
         });
+    }
+
+    private void sendResultFromTraining() {
+        confirmButton.setVisibility(View.GONE);
+        progressBarPractise.setVisibility(View.VISIBLE);
+        PractiseModel practiseModel = new PractiseModel();
+        practiseModel.setCategory(requestModel.getCategory());
+        practiseModel.setLevel(requestModel.getLevel());
+        practiseModel.setPoints(points);
+
+        APIEndpoints service = ServiceGenerator.createServiceAuthorization(APIEndpoints.class, authToken);
+        Call<Void> insertPractise = service.insertTrainingInfo(practiseModel);
+
+        insertPractise.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Intent intent = new Intent(PractiseQuestionActivity.this, PractiseActivity.class);
+                    startActivity(intent);
+                    finish();
+                    Toast.makeText(PractiseQuestionActivity.this, "Your score is successfully stored", Toast.LENGTH_LONG).show();
+                } else {
+                    confirmButton.setVisibility(View.VISIBLE);
+                    ServiceGenerator.handleError(response, PractiseQuestionActivity.this);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Intent intent = new Intent(PractiseQuestionActivity.this, PractiseActivity.class);
+                startActivity(intent);
+                finish();
+                Toast.makeText(PractiseQuestionActivity.this, t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void showPauseDialog() {
+        final Dialog dialog = new Dialog(context);
+        dialog.setContentView(R.layout.dialog_pause);
+        dialog.setCancelable(false);
+
+        TextView resume = (TextView) dialog.findViewById(R.id.dialog_resume);
+        TextView mainMenu = (TextView) dialog.findViewById(R.id.dialog_main_menu);
+
+        resume.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                isTimerPaused = false;
+                startTimer(timeRemaining, 1000);
+
+            }
+        });
+
+        mainMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                Intent intent = new Intent(PractiseQuestionActivity.this, MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        dialog.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isTimerFinished) {
+           sendResultFromTraining();
+        } else {
+            isTimerPaused = true;
+            showPauseDialog();
+        }
     }
 }
